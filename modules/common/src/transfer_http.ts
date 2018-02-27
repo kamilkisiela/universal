@@ -14,7 +14,7 @@ import {
   HttpRequest,
   HttpResponse
 } from '@angular/common/http';
-import {ApplicationRef, Injectable, NgModule} from '@angular/core';
+import {ApplicationRef, Injectable, NgModule, InjectionToken, Inject, Optional} from '@angular/core';
 import {BrowserTransferStateModule, TransferState, makeStateKey} from '@angular/platform-browser';
 import {Observable} from 'rxjs/Observable';
 import {of as observableOf} from 'rxjs/observable/of';
@@ -30,6 +30,10 @@ export interface TransferHttpResponse {
   url?: string;
 }
 
+export interface TransferHttpWhitelist {
+  url: string;
+}
+
 function getHeadersMap(headers: HttpHeaders) {
   const headersMap: {[name: string]: string[]} = {};
   for (const key of headers.keys()) {
@@ -38,17 +42,18 @@ function getHeadersMap(headers: HttpHeaders) {
   return headersMap;
 }
 
+export const TRANSFER_HTTP_WHITELIST = new InjectionToken<TransferHttpWhitelist[]>('[@nguniversal/common] whitelist');
+
 @Injectable()
 export class TransferHttpCacheInterceptor implements HttpInterceptor {
 
   private isCacheActive = true;
 
   private invalidateCacheEntry(url: string) {
-    this.transferState.remove(makeStateKey<TransferHttpResponse>('G.' + url));
-    this.transferState.remove(makeStateKey<TransferHttpResponse>('H.' + url));
+    ['G', 'H', 'P'].forEach(method => this.transferState.remove(makeStateKey<TransferHttpResponse>(method + '.' + url)));
   }
 
-  constructor(appRef: ApplicationRef, private transferState: TransferState) {
+  constructor(appRef: ApplicationRef, private transferState: TransferState, @Optional() @Inject(TRANSFER_HTTP_WHITELIST) private whitelist: TransferHttpWhitelist[]) {
     // Stop using the cache if the application has stabilized, indicating initial rendering is
     // complete.
     appRef.isStable
@@ -60,8 +65,11 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Stop using the cache if there is a mutating call.
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
+    const isMutating = this.isMutating(req);
+    const isAllowed = this.isAllowed(req);
+
+    // Stop using the cache if there is a mutating call or it's not on whitelist.
+    if (isMutating || !isAllowed) {
       this.isCacheActive = false;
       this.invalidateCacheEntry(req.url);
     }
@@ -71,7 +79,7 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    const key = (req.method === 'GET' ? 'G.' : 'H.') + req.url;
+    const key = this.getKey(req);
     const storeKey = makeStateKey<TransferHttpResponse>(key);
 
     if (this.transferState.hasKey(storeKey)) {
@@ -102,6 +110,22 @@ export class TransferHttpCacheInterceptor implements HttpInterceptor {
           })
         );
     }
+  }
+
+  private isAllowed(req: HttpRequest<any>): boolean {
+    if (this.whitelist) {
+      return this.whitelist.some(({url}) => req.url.startsWith(url));
+    }
+
+    return false;
+  }
+
+  private getKey(req: HttpRequest<any>): string {
+    return req.method.substr(0, 1) + '.' + req.url;
+  }
+
+  private isMutating(req: HttpRequest<any>): boolean {
+    return req.method !== 'GET' && req.method !== 'HEAD';
   }
 }
 
