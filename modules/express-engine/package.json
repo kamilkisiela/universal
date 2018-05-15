@@ -1,11 +1,7 @@
 {
   "name": "@nguniversal/express-engine",
-  "version": "5.0.0-beta.5",
+  "version": "0.0.0-PLACEHOLDER",
   "description": "Express Engine for running Server Angular Apps",
-  "main": "./bundles/express-engine.umd.js",
-  "module": "./esm5/express-engine.es5.js",
-  "es2015": "./esm2015/express-engine.js",
-  "typings": "./express-engine.d.ts",
   "license": "MIT",
   "keywords": [
     "express",
@@ -13,10 +9,13 @@
     "universal"
   ],
   "peerDependencies": {
-    "@angular/common": "^5.0.0",
-    "@angular/core": "^5.0.0",
-    "@angular/platform-server": "^5.0.0",
+    "@angular/common": "NG_VERSION",
+    "@angular/core": "NG_VERSION",
+    "@angular/platform-server": "NG_VERSION",
     "express": "^4.15.2"
+  },
+  "ng-update": {
+    "packageGroup": "NG_UPDATE_PACKAGE_GROUP"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,39 @@
+load("//tools:defaults.bzl", "ts_library", "ng_module", "ng_package")
+
+package(default_visibility = ["//visibility:public"])
+
+load("@build_bazel_rules_nodejs//:defs.bzl", "jasmine_node_test")
+
+ng_module(
+    name = "common",
+    srcs = glob([
+        "*.ts",
+        "src/**/*.ts",
+    ]),
+    module_name = "@nguniversal/common",
+    deps = [],
+)
+
+ng_package(
+    name = "npm_package",
+    srcs = [":package.json"],
+    entry_point = "modules/common/index.js",
+    readme_md = ":README.md",
+    deps = [":common"],
+)
+
+ts_library(
+    name = "unit_test_lib",
+    testonly = True,
+    srcs = glob([
+        "spec/**/*.spec.ts",
+    ]),
+    deps = [
+        ":common",
+    ],
+)
+
+# jasmine_node_test(
+#     name = "unit_test",
+#     srcs = [":unit_test_lib"],
+# )

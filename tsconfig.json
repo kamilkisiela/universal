@@ -16,14 +16,31 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "types": ["tslib", "jasmine", "node"],
     "lib": [
       "dom",
-      "es6"
-    ]
+      "es6",
+      "es2015"
+    ],
+    "noStrictGenericChecks": true,
+    "baseUrl": "./",
+    "rootDir": "./",
+    "paths": {
+      "@nguniversal/*": ["./modules/*"]
+    }
   },
+  "exclude": [
+    "bazel-out",
+    "dist",
+    "node_modules",
+    "**/*/node_modules"
+  ],
   "compileOnSave": false,
   "buildOnSave": false,
   "atom": {
     "rewriteTsconfig": false
+  },
+  "bazelOptions": {
+    "suppressTsconfigOverrideWarnings": true
   }
 }

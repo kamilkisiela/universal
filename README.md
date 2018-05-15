@@ -33,9 +33,6 @@ The packages from this repo are published as scoped packages under [@nguniversal
 - [@nguniversal/hapi-engine](https://github.com/angular/universal/blob/master/modules/hapi-engine/README.md)
 - [@nguniversal/module-map-ngfactory-loader](https://github.com/angular/universal/tree/master/modules/module-map-ngfactory-loader) (for handling lazy loaded modules on the server).
 
-
-The 1.x packages work with Angular 4.x while the 5.x packages will work with Angular 5.x. We will match the major version with Angular starting from 5.0 to avoid confusion.
-
 # Upgrading from Angular2-Universal
 > If you're coming from the original `angular2-universal` (2.x) here are some helpful steps for porting your application to Angular 4 & platform-server.
 
@@ -71,7 +68,7 @@ The 1.x packages work with Angular 4.x while the 5.x packages will work with Ang
 # Getting Started
 
 [* **NodeJS** :: Example repo](https://github.com/angular/universal-starter)
-  - Minimal webpack & universal example with Angular 5.0
+  - Minimal webpack & universal example
 
 [* ASP.NET Core :: Universal Starter repo](https://github.com/MarkPieszak/aspnetcore-angular2-universal)
   - **Installation**: Clone the above repo, `npm i && dotnet restore` *(VStudio will run these automatically when opening the project)*
@@ -81,7 +78,7 @@ The 1.x packages work with Angular 4.x while the 5.x packages will work with Ang
 
 # Universal "Gotchas"
 
-> When building Universal components in Angular 2 there are a few things to keep in mind.
+> When building Universal components in Angular there are a few things to keep in mind.
 
  - **`window`**, **`document`**, **`navigator`**, and other browser types - _do not exist on the server_ - so using them, or any library that uses them (jQuery for example) will not work. You do have some options, if you truly need some of this functionality:
     - If you need to use them, consider limiting them to only your client and wrapping them situationally. You can use the Object injected using the PLATFORM_ID token to check whether the current platform is browser or server. 
@@ -124,6 +121,7 @@ constructor(element: ElementRef, renderer: Renderer2) {
 We believe that using the word "universal" is correct when referring to a JavaScript Application that runs in more environments than the browser. (inspired by [Universal JavaScript](https://medium.com/@mjackson/universal-javascript-4761051b7ae9))
 
 # Universal Team
+- [Adam Plumer](https://github.com/CaerusKaru) and [Fabian Wiles](https://github.com/Toxicable) - Current maintainers
 - [PatrickJS](https://twitter.com/gdi2290) and [Jeff Whelpley](https://twitter.com/jeffwhelpley) - Founders of the Angular Universal project. (Universal rendering is also called [PatrickJS-ing](https://twitter.com/jeffbcross/status/846512930971516928))
 - [Mark Pieszak](https://twitter.com/MarkPieszak) - Contributor and Evangelist, ASP.NET Core Engine
 - [Jason Jean](https://github.com/FrozenPandaz) - Express engine and Universal support for CLI

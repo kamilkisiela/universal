@@ -12,17 +12,10 @@ branches:
   only:
   - master
 
-jobs:
-  include:
-    - env: "MODE=lint"
-    - env: "MODE=build"
-    - env: "MODE=karma"
-    - env: "MODE=jasmine"
-
 install:
   - yarn install --frozen-lockfile
 
 script:
-  - ./scripts/ci/travis-script.sh
+  - echo 'hello'
 
 cache: yarn
